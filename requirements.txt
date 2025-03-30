@@ -1,0 +1,11 @@
+alembic
+fastapi
+psycopg2-binary
+python-dotenv
+sqlalchemy
+fastapi-users[sqlalchemy]
+uvicorn
+asyncpg
+fastapi-cache2[redis]
+redis
+apscheduler
