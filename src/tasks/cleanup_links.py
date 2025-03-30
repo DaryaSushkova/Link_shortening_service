@@ -20,7 +20,7 @@ async def delete_expired_links():
             ).returning(ShortLink.id)
         
         result = await session.execute(stmt)
-        rows = result.fetchall()
+        rows = await result.fetchall()
         await session.commit()
 
         deleted_links = [row[0] for row in rows]
@@ -44,7 +44,7 @@ async def delete_unused_links():
             ).returning(ShortLink.id)
         
         result = await session.execute(stmt)
-        rows = result.fetchall()
+        rows = await result.fetchall()
         await session.commit()
 
         deleted_links = [row[0] for row in rows]

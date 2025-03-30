@@ -9,3 +9,8 @@ asyncpg
 fastapi-cache2[redis]
 redis
 apscheduler
+pytest
+pytest-cov
+pytest-asyncio
+httpx[http2]
+pytest-mock

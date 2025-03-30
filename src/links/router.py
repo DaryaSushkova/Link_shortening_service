@@ -13,7 +13,6 @@ from src.auth.models import User
 from src.links.models import ShortLink
 from src.utils.shortcode import generate_short_code_from_uuid
 from src.links.schemas import LinkCreate, LinkRead, LinkStats, LinkUpdate
-from src.logger_config import logger
 from src.cache.redis_client import cache_get, cache_set, cache_delete
 
 
@@ -46,7 +45,13 @@ async def create_short_link(
         
         short_code = link_data.custom_alias
     else:
-        short_code = generate_short_code_from_uuid(link_id)
+        while True:
+            short_code = generate_short_code_from_uuid(link_id)
+            stmt = select(ShortLink).where(ShortLink.short_code == short_code)
+            result = await session.execute(stmt)
+            existing = result.scalars().first()
+            if not existing:
+                break
 
     # Если анонимный пользователь, то задаем время жизни ссылки на 1 день
     if not user and not link_data.expires_at:
@@ -167,7 +172,6 @@ async def update_link(
     await session.refresh(link)
 
     # Удаление кэша
-    logger.info(f"{previous_url}, {link_data.original_url}")
     await cache_delete(f"/links/search", {"original_url": previous_url})
     await cache_delete(f"/links/search", {"original_url": link_data.original_url})
     await cache_delete(f"/links/{short_code}", {})

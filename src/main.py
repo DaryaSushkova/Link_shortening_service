@@ -47,7 +47,7 @@ app.include_router(router_links, prefix="/links", tags=["links"])
 
 @app.get("/")
 def read_root():
-    return {"message": "Hello from Short Links Service"}
+    return {"message": "Hello from Short Links Service!"}
 
 
 if __name__ == "__main__":
